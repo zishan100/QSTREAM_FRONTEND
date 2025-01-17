@@ -30,7 +30,7 @@ export default function Sections({ filter }) {
   const closePlayer = () => setPlayers(false);
 
   useEffect(() => {
-    const socket = SocketIOClient("https://qstream-backend.onrender.com");
+    const socket = SocketIOClient(hostAddress);
 
     socket.on("serverToClient", () => {
       fetchMovies();

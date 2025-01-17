@@ -1,6 +1,9 @@
 export const sortBy = ["Release Date", "View Count"];
 
-export const hostAddress = "http://localhost:8082";
+export let hostAddress =
+  process.env.REACT_APP_ENV === "development"
+    ? "http://localhost:8082"
+    : "https://qstream-backend.onrender.com";
 
 export const registerForm = [
   {
