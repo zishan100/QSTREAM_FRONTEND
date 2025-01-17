@@ -1,0 +1,19 @@
+.customSelect{
+    display: flex;
+    align-self: center;
+    color: var(--black-color);
+    background-color: var(--white-color);
+    align-items: center;
+    border-radius: 1.5rem;
+    padding:0.3rem 0.6rem;
+    height: fit-content;
+    cursor: pointer;
+}
+
+.customSelect select{
+    outline: none;
+}
+
+.selectTitle{
+
+}

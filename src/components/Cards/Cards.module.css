@@ -1,0 +1,18 @@
+.cardContainer{
+   height:fit-content;
+   background-color: var(--background-color) !important; 
+   box-shadow: none !important;  
+   color: var(--white-color) !important;
+   cursor: pointer;
+}
+.cardMedia {
+    transition: all 0.2s;
+    margin-bottom: 1rem;
+    
+  }
+  
+.cardMedia:hover {
+    filter: brightness(50%);
+    transform: scale(1.15);
+}
+  

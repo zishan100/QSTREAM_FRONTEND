@@ -1,0 +1,33 @@
+.searchContainer {
+    display: flex;
+    align-items: center;
+    /* border: 2px solid #ccc; */
+    border-radius: 25px;
+    padding: 5px 10px;
+    background-color: var(--black-color);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.searchField {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    padding: 5px;
+    width: 300px;
+    background-color: var(--black-color);
+}
+
+.searchField::placeholder {
+    color: #aaa;
+}
+
+.searchField:focus {
+    border: none;
+    outline: none;
+}

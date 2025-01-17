@@ -1,0 +1,33 @@
+.boxContainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+}
+
+.signInCard {
+    padding: 2rem;
+}
+
+.paper{
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+}
+
+.form{
+    width: "100%"; 
+    margin-top: 1rem,
+}
+.submit{
+    margin: 1rem  0rem 1rem !important;
+}
+
+.closeBtn {
+    margin: 2rem 0rem 1rem 0rem !important;
+    background-color: var(--btn-color) !important ;
+    color: var(--white-color) !important;
+    font-weight: bold;
+}
+  

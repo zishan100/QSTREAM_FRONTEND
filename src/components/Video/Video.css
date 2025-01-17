@@ -1,0 +1,15 @@
+.videoResolution{
+    width:100%;
+    height: auto;
+}
+
+.videoCloseBtn{
+    position: fixed;
+    top: 0%;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    color: whitesmoke !important;
+    z-index: 2;
+    size: 1.8rem !important;
+    cursor: pointer;
+}

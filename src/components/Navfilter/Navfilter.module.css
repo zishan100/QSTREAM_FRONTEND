@@ -1,0 +1,23 @@
+.horizontalList {
+    /* width:100%; */
+    list-style-type: none; /* Remove bullets */
+    display: flex;         /* Arrange items in a row */
+    justify-content: center;       
+  }
+  
+  .horizontalList li {
+    margin: .7rem;   
+    padding:.3rem .8rem;
+  }
+
+  .horizontalList li:hover{
+    background-color: var(--select-color);     
+    border-radius: 1.5rem;
+    cursor: pointer;
+  }
+
+  .select{
+    background-color: var(--white-color);
+    color:var(--black-color);     
+    border-radius: 1.5rem;
+  }

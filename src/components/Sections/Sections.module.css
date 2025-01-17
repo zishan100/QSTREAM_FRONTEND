@@ -1,0 +1,18 @@
+.gridContainer {
+    margin: 1.5rem 0rem 1.5rem 0rem;
+    width: fit-content;
+}
+
+.loader{
+  color: var(--btn-color) !important;
+}
+  
+/* For devices with a max width of 576px */
+@media only screen and (max-width: 600px) {
+    
+    .gridContainer {
+      display: flex;
+      justify-content: center;
+    }
+}
+  
