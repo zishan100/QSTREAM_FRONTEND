@@ -5,16 +5,14 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import style from "./Sections.module.css";
 import Card from "../Cards/Cards";
-import Modals from "../Modals/Modals";
 import VideoPlayer from "../VideoPlayer/VideoPlayer";
 import axios from "axios";
-import movies from "../../data/movies.json";
 import { hostAddress } from "../../Utils/Const";
 import { useSnackbar } from "notistack";
 import SocketIOClient from "socket.io-client";
 import { filterMoviesByQuery } from "../../Utils/Helpers";
 
-export default function Sections({ filter }) {
+export default function Sections({ filter, search }) {
   let { enqueueSnackbar } = useSnackbar();
   let [movieslist, setMovieslist] = useState([]);
   let [updatedmovies, setUpdatemovies] = useState([]);
@@ -25,9 +23,29 @@ export default function Sections({ filter }) {
   const openPlayer = (e, obj) => {
     setUrl(obj.url);
     setPlayers(true);
+
+    viewVideo(obj.id);
   };
 
   const closePlayer = () => setPlayers(false);
+  /*   
+    Created separate useEffect for search functionality (used debouncing)
+  */
+  useEffect(() => {
+    let debouncing;
+
+    debouncing = setTimeout(() => {
+      // console.log("search :", search);
+      fetchMovies();
+    }, 1000);
+
+    // console.log(" Inside callback useEffect :", debouncing);
+
+    return () => {
+      clearTimeout(debouncing);
+      // console.log("In unmount phases of fc :", debouncing);
+    };
+  }, [search]);
 
   useEffect(() => {
     const socket = SocketIOClient(hostAddress);
@@ -64,6 +82,20 @@ export default function Sections({ filter }) {
           : "&contentRating=" + getFilters["age"];
       }
 
+      if (getFilters["sortBy"]) {
+        apiUrl +=
+          getFilters["genre"] || getFilters["age"]
+            ? "&sortBy=" + getFilters["sortBy"]
+            : "?sortBy=" + getFilters["sortBy"];
+      }
+
+      if (search) {
+        apiUrl +=
+          getFilters["genre"] || getFilters["age"] || getFilters["sortBy"]
+            ? "&title=" + search
+            : "?title=" + search;
+      }
+
       const movies = await axios.get(apiUrl);
 
       // console.log("Movies list :", movies.data);
@@ -74,6 +106,23 @@ export default function Sections({ filter }) {
       }, 1000);
     } catch (err) {
       // console.log(err);
+      if (err && err.code === "ERR_NETWORK") {
+        enqueueSnackbar(
+          "Something went wrong. Check that the backend is running, reachable and returns valid JSON.",
+          { variant: "error" }
+        );
+      } else if (err && err?.status === 400) {
+        enqueueSnackbar(err.response.data.message, { variant: "error" });
+      }
+    }
+  };
+
+  const viewVideo = async (id) => {
+    try {
+      let apiUrl = `${hostAddress}/v1/videos/${id}/views`;
+      await axios.patch(apiUrl);
+    } catch (err) {
+      // console.log("error occured :", err);
       if (err && err.code === "ERR_NETWORK") {
         enqueueSnackbar(
           "Something went wrong. Check that the backend is running, reachable and returns valid JSON.",
@@ -97,6 +146,7 @@ export default function Sections({ filter }) {
             return (
               <Card
                 key={_id}
+                id={_id}
                 title={title}
                 url={videoLink}
                 thumbnail={previewImage}
