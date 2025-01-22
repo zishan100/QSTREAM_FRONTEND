@@ -12,6 +12,7 @@
 
 .customSelect select{
     outline: none;
+    border: none ;
 }
 
 .selectTitle{

@@ -17,6 +17,7 @@ export const filterType = {
     { type: "16+", select: false },
     { type: "18+", select: false },
   ],
+  sortBy: "",
 };
 
 export const filterSelect = (selectVal, arr, type) => {
@@ -146,7 +147,7 @@ export const s3Client = new S3Client({
 
 export const filterMoviesByQuery = (filter) => {
   // console.log("Inside helpers :", filter);
-  let filterByType = { age: "", genre: "" };
+  let filterByType = { age: "", genre: "", sortBy: "" };
 
   if (!filter["genre"][0].select) {
     let filterByGenre = filter["genre"].filter(
@@ -164,6 +165,10 @@ export const filterMoviesByQuery = (filter) => {
     filterByAge = filterByAge.map(({ type }) => type);
 
     filterByType["age"] = filterByAge.join(",");
+  }
+
+  if (filter["sortBy"]) {
+    filterByType["sortBy"] = filter["sortBy"];
   }
 
   return filterByType;

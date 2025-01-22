@@ -7,6 +7,7 @@ import Grid from "@mui/material/Grid2";
 import style from "./Cards.module.css";
 
 export default function Cards({
+  id,
   title,
   url,
   thumbnail,
@@ -17,7 +18,7 @@ export default function Cards({
     <Grid size={{ xs: 8, sm: 6, md: 3 }}>
       <Card
         className={style.cardContainer}
-        onClick={(e) => clickEvent(e, { url })}
+        onClick={(e) => clickEvent(e, { id, url })}
       >
         <CardMedia
           component="img"

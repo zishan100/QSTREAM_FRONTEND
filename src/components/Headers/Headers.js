@@ -15,7 +15,7 @@ export default function Headers({ selectEventHandle, filter }) {
           eventSelect={selectEventHandle}
           id="genre"
         />
-        <Selects />
+        <Selects eventSelect={selectEventHandle} />
       </div>
       <Navfilter
         navFilter={filter["age"]}
