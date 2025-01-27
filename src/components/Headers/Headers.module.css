@@ -1,0 +1,40 @@
+
+  
+  .searchBar {
+    width: 100%;
+  }
+  
+  .Headers_searchBar__sdNHc{
+    width:100%;
+    max-width: 1000px;
+    color: whitesmoke !important;
+}
+
+  .searchBar .MuiOutlinedInput-root {
+    border-radius: 8px;
+  }
+  
+  .searchBar .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #1976d2;
+  }
+  
+  .searchBar .MuiOutlinedInput-notchedOutline {
+    border-color: #ccc;
+  }
+  
+  .searchIcon {
+    color: #757575;
+    cursor: pointer;
+  }
+  
+  .searchBar .MuiOutlinedInput-input {
+    padding-right: 40px; /* Ensures no text overlaps with the icon */
+  }
+
+
+  @media (min-width:769px){
+     
+    .searchBar{
+        display: none !important;
+    }
+  }
