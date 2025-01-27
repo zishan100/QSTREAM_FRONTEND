@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
+*{
+  color: var(--white-color) !important;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -7,18 +11,11 @@ body {
   background-color: var(--background-color) !important;
 }
 
+
 :root{
     --black-color:#111111;
     --background-color:#1D1D1D;
     --white-color:#FFFFFF;
     --btn-color:#ef4444;
     --select-color:#57534e;
-}
-
-.css-lc42l8-MuiInputBase-input-MuiOutlinedInput-input{
-  color: var(--white-color) !important;
-}
-
-.css-1u3bzj6-MuiFormControl-root-MuiTextField-root{
-  background-color: var(--black-color) !important;
 }

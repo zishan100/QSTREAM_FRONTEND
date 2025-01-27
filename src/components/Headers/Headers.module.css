@@ -2,12 +2,12 @@
   
   .searchBar {
     width: 100%;
+    background-color: var(--black-color) !important;
   }
   
   .Headers_searchBar__sdNHc{
     width:100%;
     max-width: 1000px;
-    color: whitesmoke !important;
 }
 
   .searchBar .MuiOutlinedInput-root {
