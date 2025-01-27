@@ -1,13 +1,12 @@
-.searchContainer {
+.searchContainer{
     display: flex;
     align-items: center;
     /* border: 2px solid #ccc; */
-    border-radius: 25px;
+    border-radius: 5px;
     padding: 5px 10px;
     background-color: var(--black-color);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
-
 .logo {
     width: 40px;
     height: 40px;
@@ -30,4 +29,12 @@
 .searchField:focus {
     border: none;
     outline: none;
+}
+
+@media(max-width: 768px) {
+    
+    .searchContainer {
+        display: none !important;
+    }
+    
 }

@@ -31,7 +31,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between pb-3">
       <Logo />
       <Search />
       <div className="flex justify-around px-2">

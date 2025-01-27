@@ -2,11 +2,12 @@
     /* width:100%; */
     list-style-type: none; /* Remove bullets */
     display: flex;         /* Arrange items in a row */
-    justify-content: center;       
-  }
+    justify-content: center;
+    flex-wrap: wrap !important;
+}
   
   .horizontalList li {
-    margin: .7rem;   
+    margin: .4rem;   
     padding:.3rem .8rem;
   }
 

@@ -1,5 +1,6 @@
 import React from "react";
 import style from "./Navfilter.module.css";
+import Selects from "../Selects/Selects";
 
 export default function Navfilter({ navFilter, eventSelect, id }) {
   return (
@@ -22,6 +23,7 @@ export default function Navfilter({ navFilter, eventSelect, id }) {
             </li>
           );
         })}
+      {id === "genre" && <Selects eventSelect={eventSelect} />}
     </ul>
   );
 }

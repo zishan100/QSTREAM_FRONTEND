@@ -14,3 +14,11 @@ body {
     --btn-color:#ef4444;
     --select-color:#57534e;
 }
+
+.css-lc42l8-MuiInputBase-input-MuiOutlinedInput-input{
+  color: var(--white-color) !important;
+}
+
+.css-1u3bzj6-MuiFormControl-root-MuiTextField-root{
+  background-color: var(--black-color) !important;
+}
