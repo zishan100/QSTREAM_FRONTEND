@@ -14,20 +14,17 @@ export default function Headers({ selectEventHandle, filter }) {
   return (
     <div className="2xl:container bg-primary text-primary py-2 mb-3">
       <Navbar />
-
-      <TextField
-        className={style.searchBar}
-        variant="outlined"
-        placeholder="Search..."
-        onChange={searchEvent}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon className={style.searchIcon} />
-            </InputAdornment>
-          ),
-        }}
-      />
+      <div class={style.searchContainer}>
+        <input
+          type="text"
+          class={style.searchInput}
+          placeholder="Search..."
+          onChange={searchEvent}
+        />
+        <div class={style.searchIconContainer}>
+          <SearchIcon className={style.searchIcon} />
+        </div>
+      </div>
 
       <div className="2xl:container flex justify-center my-3">
         <Navfilter

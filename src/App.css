@@ -15,7 +15,3 @@ body {
     --btn-color:#ef4444;
     --select-color:#57534e;
 }
-
-.MuiInputBase-input{
-  color: var(--white-color) !important;
-}
