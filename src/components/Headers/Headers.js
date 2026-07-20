@@ -8,31 +8,33 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import { SearchContext } from "../../Utils/contextSearch";
+import { useLocation } from "react-router-dom";
 
 export default function Headers({ selectEventHandle, filter }) {
   const { searchEvent } = useContext(SearchContext);
-  return (
-    <div className="2xl:container bg-primary text-primary py-2 mb-3">
-      <Navbar />
-      <div class={style.searchContainer}>
-        <input
-          type="text"
-          class={style.searchInput}
-          placeholder="Search..."
-          onChange={searchEvent}
-        />
-        <div class={style.searchIconContainer}>
-          <SearchIcon className={style.searchIcon} />
-        </div>
-      </div>
+  const { pathname } = useLocation();
 
-      <div className="2xl:container flex justify-center my-3">
-        <Navfilter
-          navFilter={filter["genre"]}
-          eventSelect={selectEventHandle}
-          id="genre"
-        />
-      </div>
+  return (
+    <div className="2xl:container bg-primary text-primary pt-2 mb-3">
+      <Navbar />
+      {pathname === "/" && (
+        <div className={style.searchContainer}>
+          <input
+            type="text"
+            className={style.searchInput}
+            placeholder="Search..."
+            onChange={searchEvent}
+          />
+          <div className={style.searchIconContainer}>
+            <SearchIcon className={style.searchIcon} />
+          </div>
+        </div>
+      )}
+      <Navfilter
+        navFilter={filter["genre"]}
+        eventSelect={selectEventHandle}
+        id="genre"
+      />
       <Navfilter
         navFilter={filter["age"]}
         eventSelect={selectEventHandle}

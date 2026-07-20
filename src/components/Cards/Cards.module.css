@@ -16,3 +16,9 @@
     transform: scale(1.15);
 }
   
+.cardContent{
+  display: flex;
+  padding:0 !important;
+  justify-content: flex-start;
+  
+}

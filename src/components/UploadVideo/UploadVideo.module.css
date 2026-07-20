@@ -1,0 +1,30 @@
+.boxContainer {
+    position: fixed;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+}
+
+.uploadVideoCard {
+    padding: 1rem;
+}
+
+.paper{
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+}
+
+.form{
+    width: 100%; 
+}
+.submit{
+    margin: .5rem  0rem .5rem !important;
+}
+
+@media (max-width:600px){
+    .boxContainer{
+       width:90%;   
+    }
+}

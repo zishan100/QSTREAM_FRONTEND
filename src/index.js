@@ -3,7 +3,8 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import { SnackbarProvider } from "notistack";
-
+import { BrowserRouter } from "react-router-dom";
+import { SocketProvider } from "./Utils/contextSocket";
 const root = createRoot(document.getElementById("root"));
 
 root.render(
@@ -16,6 +17,10 @@ root.render(
     }}
     preventDuplicate
   >
-    <App />
+    <BrowserRouter>
+      <SocketProvider>
+        <App />
+      </SocketProvider>
+    </BrowserRouter>
   </SnackbarProvider>
 );

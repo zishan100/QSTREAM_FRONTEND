@@ -6,11 +6,9 @@ import Typography from "@mui/material/Typography";
 import style from "./Sections.module.css";
 import Card from "../Cards/Cards";
 import VideoPlayer from "../VideoPlayer/VideoPlayer";
-import axios from "axios";
-import { hostAddress } from "../../Utils/Const";
 import { useSnackbar } from "notistack";
-import SocketIOClient from "socket.io-client";
-import { filterMoviesByQuery } from "../../Utils/Helpers";
+import { viewVideoApi, fetchMoviesApi } from '../Api/videoApi'
+import { GirlOutlined } from "@mui/icons-material";
 
 export default function Sections({ filter, search }) {
   let { enqueueSnackbar } = useSnackbar();
@@ -21,6 +19,7 @@ export default function Sections({ filter, search }) {
   let [player, setPlayers] = useState(false);
 
   const openPlayer = (e, obj) => {
+    e.preventDefault();
     setUrl(obj.url);
     setPlayers(true);
 
@@ -43,116 +42,62 @@ export default function Sections({ filter, search }) {
 
     return () => {
       clearTimeout(debouncing);
-      // console.log("In unmount phases of fc :", debouncing);
     };
   }, [search]);
 
   useEffect(() => {
-    const socket = SocketIOClient(hostAddress);
-
-    socket.on("serverToClient", () => {
-      fetchMovies();
-
-      enqueueSnackbar("Movies loaded successfully...", {
-        variant: "success",
-      });
-    });
     setMovieslist([]);
     fetchMovies();
-
-    return () => {
-      socket.disconnect();
-    };
   }, [filter]);
 
   const fetchMovies = async () => {
+
     setLoader(true);
     try {
-      let getFilters = filterMoviesByQuery(filter);
-
-      let apiUrl = `${hostAddress}/v1/videos`;
-
-      if (getFilters["genre"]) {
-        apiUrl += "?genres=" + getFilters["genre"];
-      }
-
-      if (getFilters["age"]) {
-        apiUrl += !getFilters["genre"]
-          ? "?contentRating=" + getFilters["age"]
-          : "&contentRating=" + getFilters["age"];
-      }
-
-      if (getFilters["sortBy"]) {
-        apiUrl +=
-          getFilters["genre"] || getFilters["age"]
-            ? "&sortBy=" + getFilters["sortBy"]
-            : "?sortBy=" + getFilters["sortBy"];
-      }
-
-      if (search) {
-        apiUrl +=
-          getFilters["genre"] || getFilters["age"] || getFilters["sortBy"]
-            ? "&title=" + search
-            : "?title=" + search;
-      }
-
-      const movies = await axios.get(apiUrl);
-
-      // console.log("Movies list :", movies.data);
+      const movies = await fetchMoviesApi(filter, search);
 
       setTimeout(() => {
         setLoader(false);
-        setMovieslist([...movies.data.videos]);
-      }, 1000);
+        setMovieslist([...movies.videos]);
+      }, 1000)
+
     } catch (err) {
-      // console.log(err);
-      if (err && err.code === "ERR_NETWORK") {
-        enqueueSnackbar(
-          "Something went wrong. Check that the backend is running, reachable and returns valid JSON.",
-          { variant: "error" }
-        );
-      } else if (err && err?.status === 400) {
-        enqueueSnackbar(err.response.data.message, { variant: "error" });
-      }
+      setLoader(false);
+      enqueueSnackbar(err?.message || "Something went wrong", { variant: "error" });
     }
   };
 
   const viewVideo = async (id) => {
     try {
-      let apiUrl = `${hostAddress}/v1/videos/${id}/views`;
-      await axios.patch(apiUrl);
+      await viewVideoApi(id);
     } catch (err) {
-      // console.log("error occured :", err);
-      if (err && err.code === "ERR_NETWORK") {
-        enqueueSnackbar(
-          "Something went wrong. Check that the backend is running, reachable and returns valid JSON.",
-          { variant: "error" }
-        );
-      } else if (err && err?.status === 400) {
-        enqueueSnackbar(err.response.data.message, { variant: "error" });
-      }
+      enqueueSnackbar(err?.message || "Something went wrong", { variant: "error" })
     }
   };
 
   return (
     <Box className="flex justify-center px-4">
       <Grid container spacing={2} className={style.gridContainer}>
+
         {loader ? (
           <CircularProgress className={style.loader} />
         ) : movieslist.length > 0 ? (
           movieslist.map((movies) => {
-            const { _id, title, previewImage, releaseDate, videoLink } = movies;
+            const { _id, title, previewImage, releaseDate, videoLink, viewCount } = movies;
 
             return (
-              <Card
-                key={_id}
-                id={_id}
-                title={title}
-                url={videoLink}
-                thumbnail={previewImage}
-                releaseDate={releaseDate}
-                clickEvent={openPlayer}
-              />
+              <Grid key={_id} size={{ xs: 8, sm: 6, md: 3 }} >
+                <Card
+                  key={_id}
+                  id={_id}
+                  title={title}
+                  url={videoLink}
+                  thumbnail={previewImage}
+                  releaseDate={releaseDate}
+                  viewCount={viewCount}
+                  clickEvent={openPlayer}
+                />
+              </Grid>
             );
           })
         ) : (

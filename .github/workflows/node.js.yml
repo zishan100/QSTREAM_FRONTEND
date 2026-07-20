@@ -27,7 +27,7 @@ jobs:
 
           script: |
 
-            cd ${{secrets.APP_PATH}}
+            cd ${{ secrets.APP_PATH }}
             
             git pull origin main
 
