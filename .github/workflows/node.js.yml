@@ -31,13 +31,13 @@ jobs:
             
             git pull origin main
 
-            docker stop frontend || true
+            sudo docker stop frontend || true
 
-            docker rm frontend || true
+            sudo docker rm frontend || true
 
-            docker build -t qstream-frontend .
+            sudo docker build -t qstream-frontend .
 
-            docker run -d \
+            sudo docker run -d \
               --name frontend \
               --env-file .env.production \
               -p 3000:3000 \
