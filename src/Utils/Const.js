@@ -1,10 +1,7 @@
 import config from '../Utils/configHelper'
 export const sortBy = ["Release Date", "View Count"];
 
-export let hostAddress =
-  config.APP_ENV === "development"
-    ? "http://localhost:8082"
-    : "https://qstream-backend.onrender.com";
+export let hostAddress = config.APP_HOST;
 
 export const registerForm = [
   {
