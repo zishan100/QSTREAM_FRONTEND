@@ -6,6 +6,9 @@ import Button from "../Button/Button";
 import Modals from "../Modals/Modals";
 import { CloudUpload } from "@mui/icons-material";
 import { useSnackbar } from "notistack";
+import { Link, useLocation } from "react-router-dom";
+import io from "socket.io-client";
+import { hostAddress } from "../../Utils/Const";
 
 export default function Navbar() {
   let [login, setLogin] = useState(false);
@@ -28,12 +31,16 @@ export default function Navbar() {
     localStorage.removeItem("userData");
     localStorage.removeItem("userToken");
     enqueueSnackbar("Logged out successfully...", { variant: "success" });
+    if (pathname === "/videoDashboard") window.location.href = "/";
   };
+
+  const { pathname } = useLocation();
 
   return (
     <div className="flex justify-between pb-3">
       <Logo />
-      <Search />
+      {pathname === "/" && <Search />}
+
       <div className="flex justify-around px-2">
         {!loggedIn ? (
           <React.Fragment>
@@ -44,17 +51,22 @@ export default function Navbar() {
               btnText="Register"
             />
           </React.Fragment>
-        ) : (
+        ) : pathname === "/" ? (
           <React.Fragment>
-            <Button
-              variant="outlined"
-              btnText="Upload"
-              modal={openUpload}
-              CloudUpload={CloudUpload}
-              component="label"
-            />
+            <Link to="/videoDashboard">
+              <Button
+                variant="outlined"
+                btnText="Upload"
+                // modal={openUpload}
+                CloudUpload={CloudUpload}
+                component="label"
+              />
+            </Link>
+
             <Button variant="outlined" btnText="Logout" modal={loggedOut} />
           </React.Fragment>
+        ) : (
+          <Button variant="outlined" btnText="Logout" modal={loggedOut} />
         )}
       </div>
       {(login && (
@@ -67,9 +79,6 @@ export default function Navbar() {
       )) ||
         (register && (
           <Modals show={register} close={closeRegister} title="Register" />
-        )) ||
-        (upload && (
-          <Modals show={upload} close={closeUpload} title="Upload Video" />
         ))}
     </div>
   );

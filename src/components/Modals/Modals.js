@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -27,18 +27,15 @@ import Backdrop from "@mui/material/Backdrop";
 import {
   validationOfLoginForm,
   validationOfRegistryForm,
-  validationOfUploadForm,
-  s3Client,
 } from "../../Utils/Helpers";
-import { Upload } from "@aws-sdk/lib-storage";
 
 export default function Modals({ show, close, title, loggedIn }) {
   let { enqueueSnackbar } = useSnackbar();
   let [registryForm, setRegistryForm] = useState([...registerForm]);
   let [loader, setLoader] = useState(false);
   let [signInForm, setSignInForm] = useState([...loginForm]);
-  let [uploadVideo, setUploadVideo] = useState([...uploadForm]);
-  let [progress, setProgress] = useState(0);
+
+  const closeLoader = () => setLoader(!loader);
 
   const handleForm = (e) => {
     // console.log(e);
@@ -51,28 +48,12 @@ export default function Modals({ show, close, title, loggedIn }) {
       };
 
       setRegistryForm([...registryForm]);
-    } else if (title === "Login") {
+    } else {
       signInForm[Number(id)] = {
         ...signInForm[Number(id)],
         value: value,
       };
       setSignInForm([...signInForm]);
-    } else {
-      // console.log(name, " ", value, " ", id, "  ", files);
-
-      if (name === "file") {
-        uploadVideo[Number(id)] = {
-          ...uploadVideo[Number(id)],
-          file: files[0],
-        };
-      } else {
-        uploadVideo[Number(id)] = {
-          ...uploadVideo[Number(id)],
-          value: value,
-        };
-      }
-
-      setUploadVideo([...uploadVideo]);
     }
   };
 
@@ -118,14 +99,14 @@ export default function Modals({ show, close, title, loggedIn }) {
         setLoader(false);
         enqueueSnackbar(errorArr[0], { variant: "error" });
       }
-    } else if (title.trim() === "Login") {
+    } else {
       setLoader(true);
 
       for (const form of signInForm) {
         formData[form.name] = form.value;
       }
 
-      console.log(formData);
+      // console.log(formData);
 
       let errorArr = validationOfLoginForm(formData);
 
@@ -136,7 +117,7 @@ export default function Modals({ show, close, title, loggedIn }) {
             formData
           );
 
-          console.log("Result :", res.data);
+          // console.log("Result :", res.data);
 
           const {
             token,
@@ -156,7 +137,7 @@ export default function Modals({ show, close, title, loggedIn }) {
           setLoader(false);
           close();
         } catch (err) {
-          console.log(err);
+          // console.log(err);
           setLoader(false);
           if (err && err.code === "ERR_NETWORK") {
             enqueueSnackbar(
@@ -172,94 +153,12 @@ export default function Modals({ show, close, title, loggedIn }) {
       } else {
         setLoader(false);
         enqueueSnackbar(errorArr[0], { variant: "error" });
-      }
-    } else {
-      setLoader(true);
-
-      for (const form of uploadVideo) {
-        if (form.name === "file") {
-          formData[form.name] = form.file;
-          continue;
-        }
-        formData[form.name] = form.value;
-      }
-
-      console.log("Upload FormData :", formData);
-
-      let errorArr = validationOfUploadForm(formData);
-
-      console.log("Error array :", errorArr);
-
-      if (errorArr.length === 0) {
-        try {
-          const videoPost = await axios.post(
-            `${hostAddress}/v1/videos`,
-            {
-              title: formData.title,
-              genre: formData.genre,
-              contentRating: formData.age,
-              releaseDate: formData.releaseDate,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${JSON.parse(
-                  localStorage.getItem("userToken")
-                )}`,
-              },
-            }
-          );
-
-          console.log("Result :", videoPost.data);
-
-          const uploadFile = new Upload({
-            client: s3Client,
-            params: {
-              Bucket: process.env.REACT_APP_BUCKET_TEMP,
-              Body: formData.file,
-              Key: `video/${videoPost.data._id}.${
-                formData.file.type.split("/")[1]
-              }`,
-              ContentType: formData.file.type.split("/")[1],
-            },
-          });
-
-          uploadFile.on("httpUploadProgress", (progress) => {
-            let { loaded, total } = progress;
-
-            let percentage = Math.round((loaded / total) * 100);
-            setProgress(percentage);
-          });
-
-          await uploadFile.done();
-
-          enqueueSnackbar("File uploaded successfully...", {
-            variant: "success",
-          });
-          setLoader(false);
-          close();
-        } catch (err) {
-          console.log(err);
-          setLoader(false);
-          if (err && err.code === "ERR_NETWORK") {
-            enqueueSnackbar(
-              "Something went wrong. Check that the backend is running, reachable and returns valid JSON.",
-              { variant: "error" }
-            );
-          } else if (err && err?.status === 400) {
-            enqueueSnackbar(err.response.data.message, { variant: "error" });
-          } else {
-            enqueueSnackbar(err.response.data.message, { variant: "error" });
-          }
-        }
-      } else {
-        enqueueSnackbar(errorArr[0], { variant: "error" });
-        setLoader(false);
       }
     }
   };
 
   return (
-    <Modal open={show} onClose={!loader && close}>
+    <Modal open={show} onClose={close}>
       <Box className={style.boxContainer} onClick={close}>
         <Card className={style.signInCard} onClick={(e) => e.stopPropagation()}>
           <Container component="main" maxWidth="xs">
@@ -271,111 +170,48 @@ export default function Modals({ show, close, title, loggedIn }) {
               <form className={style.form} onSubmit={handleSubmitForm}>
                 {title === "Register"
                   ? registryForm.map((textfield, idx) => {
-                      return (
-                        <TextField
-                          key={idx}
-                          variant={textfield.variant}
-                          margin={textfield.margin}
-                          // required
-                          fullWidth
-                          id={textfield.id}
-                          label={textfield.label}
-                          name={textfield.name}
-                          value={textfield.value}
-                          type={textfield.type}
-                          onChange={handleForm}
-                          autoComplete={
-                            textfield.autoComplete ? textfield.autoComplete : ""
-                          }
-                          autoFocus
-                        />
-                      );
-                    })
-                  : title !== "Upload Video"
-                  ? signInForm.map((textfield, idx) => {
-                      return (
-                        <TextField
-                          key={idx}
-                          variant={textfield.variant}
-                          margin={textfield.margin}
-                          // required
-                          fullWidth
-                          id={textfield.id}
-                          label={textfield.label}
-                          name={textfield.name}
-                          value={textfield.value}
-                          type={textfield.type}
-                          onChange={handleForm}
-                          autoComplete={
-                            textfield.autoComplete ? textfield.autoComplete : ""
-                          }
-                          autoFocus
-                        />
-                      );
-                    })
-                  : uploadVideo.map((textfield, idx) => {
-                      return textfield.type === "select" ? (
-                        <TextField
-                          key={idx}
-                          variant={textfield.variant}
-                          margin={textfield.margin}
-                          // required
-                          fullWidth
-                          id={textfield.id}
-                          select
-                          label={textfield.label}
-                          name={textfield.name}
-                          defaultValue={textfield.value}
-                          onChange={handleForm}
-                          slotProps={{
-                            select: {
-                              native: true,
-                            },
-                          }}
-                        >
-                          {(textfield.name === "genre" &&
-                            genreType.map((value, idx) => (
-                              <option id={textfield.id} key={idx} value={value}>
-                                {value}
-                              </option>
-                            ))) ||
-                            (textfield.name === "age" &&
-                              ageType.map((value, idx) => (
-                                <option
-                                  id={textfield.id}
-                                  key={idx}
-                                  value={value}
-                                >
-                                  {value}
-                                </option>
-                              )))}
-                        </TextField>
-                      ) : (
-                        <React.Fragment>
-                          <TextField
-                            key={idx}
-                            variant={textfield.variant}
-                            margin={textfield.margin}
-                            // required
-                            fullWidth
-                            id={textfield.id}
-                            label={textfield.label}
-                            name={textfield.name}
-                            value={textfield.value}
-                            type={textfield.type}
-                            onChange={handleForm}
-                          />
-                          {textfield.type === "file" && (
-                            <LinearProgress
-                              color="success"
-                              variant="determinate"
-                              value={progress}
-                            />
-                          )}
-                        </React.Fragment>
-                      );
-                    })}
-
+                    return (
+                      <TextField
+                        key={idx}
+                        variant={textfield.variant}
+                        margin={textfield.margin}
+                        // required
+                        fullWidth
+                        id={textfield.id}
+                        label={textfield.label}
+                        name={textfield.name}
+                        value={textfield.value}
+                        type={textfield.type}
+                        onChange={handleForm}
+                        autoComplete={
+                          textfield.autoComplete ? textfield.autoComplete : ""
+                        }
+                        autoFocus
+                      />
+                    );
+                  })
+                  : signInForm.map((textfield, idx) => {
+                    return (
+                      <TextField
+                        key={idx}
+                        variant={textfield.variant}
+                        margin={textfield.margin}
+                        // required
+                        fullWidth
+                        id={textfield.id}
+                        label={textfield.label}
+                        name={textfield.name}
+                        value={textfield.value}
+                        type={textfield.type}
+                        onChange={handleForm}
+                        autoComplete={
+                          textfield.autoComplete ? textfield.autoComplete : ""
+                        }
+                        autoFocus
+                      />
+                    );
+                  })
+                }
                 <Button
                   type="submit"
                   fullWidth

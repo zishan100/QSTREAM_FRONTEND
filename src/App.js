@@ -4,6 +4,9 @@ import Headers from "./components/Headers/Headers";
 import Sections from "./components/Sections/Sections";
 import { filterType, filterSelect } from "./Utils/Helpers";
 import { SearchContext } from "./Utils/contextSearch";
+import { Routes, Route } from "react-router-dom";
+import VideoDashboard from "./components/VideoDashboard/VideoDashboard";
+import ProtectedRoute from "./Utils/ProtectedRoute";
 
 function App() {
   const [filter, setFilter] = useState({ ...filterType });
@@ -14,6 +17,7 @@ function App() {
   };
 
   const selectEventHandle = (e) => {
+    e.preventDefault();
     // console.log("event capturing");
 
     const type = e.currentTarget.id;
@@ -36,20 +40,32 @@ function App() {
     } else {
       let { name, value } = e.currentTarget;
       // console.log(name, " ", value);
+      console.log(name, " ", value);
       value =
         value.split(" ")[0].toLowerCase() +
         value.split(" ")[1].charAt(0).toUpperCase() +
         value.split(" ")[1].substring(1);
-      // console.log(value);
       setFilter({ ...filter, sortBy: value });
     }
+    console.log(filter, " Sections Component.");
+
   };
 
   return (
     <div className="2xl:container">
       <SearchContext.Provider value={{ searchEvent }}>
         <Headers selectEventHandle={selectEventHandle} filter={filter} />
-        <Sections filter={filter} search={search} />
+
+        <Routes>
+          <Route
+            path="/"
+            element={<Sections filter={filter} search={search} />}
+          />
+
+          <Route element={<ProtectedRoute />} >
+            <Route path="videoDashboard" element={<VideoDashboard />} />
+          </Route>
+        </Routes>
       </SearchContext.Provider>
     </div>
   );

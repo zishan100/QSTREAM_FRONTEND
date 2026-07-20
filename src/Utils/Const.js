@@ -1,7 +1,8 @@
+import config from '../Utils/configHelper'
 export const sortBy = ["Release Date", "View Count"];
 
 export let hostAddress =
-  process.env.REACT_APP_ENV === "development"
+  config.APP_ENV === "development"
     ? "http://localhost:8082"
     : "https://qstream-backend.onrender.com";
 
@@ -131,3 +132,27 @@ export const genreType = [
 export const ageType = ["All", "7+", "12+", "16+", "18+"];
 
 export const videoExtension = ["mp4", "mov", "avi", "mkv"];
+
+export const filterByTab = [
+  "Video Upload",
+  "Video Uploading",
+  "Video Uploaded By User",
+];
+
+export const envVar = {
+  prodBucket: config.APP_PROD_BUCKET,
+  s3Domain: config.APP_S3_DOMAIN,
+  prodFolder: config.APP_PROD_FOLDER
+}
+export const videos = [
+  {
+    _id: "698483fafe8304e7899615c6",
+    title: "Test video",
+    genre: "Movies",
+    contentRating: "18+",
+    releaseDate: "2026-02-06",
+    viewCount: 5,
+    videoUploading: true
+  },
+]
+export const ITEMS_PER_PAGE = 4;

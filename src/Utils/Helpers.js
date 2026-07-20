@@ -1,5 +1,6 @@
 import { S3Client } from "@aws-sdk/client-s3";
-import { videoExtension } from "./Const";
+import { videoExtension, hostAddress } from "./Const";
+import config from '../Utils/configHelper';
 
 export const filterType = {
   genre: [
@@ -101,9 +102,8 @@ export const validationOfLoginForm = (formData) => {
 };
 
 export const validationOfUploadForm = (formData) => {
-  const currDate = `${new Date().getFullYear()}-${
-    new Date().getMonth() + 1
-  }-${new Date().getDate()}`;
+  const currDate = `${new Date().getFullYear()}-${new Date().getMonth() + 1
+    }-${new Date().getDate()}`;
 
   let errorArr = [];
 
@@ -138,10 +138,10 @@ export const validationOfUploadForm = (formData) => {
 };
 
 export const s3Client = new S3Client({
-  region: process.env.REACT_APP_REGION,
+  region: config.APP_REGION,
   credentials: {
-    accessKeyId: process.env.REACT_APP_ACCESS_KEY_ID,
-    secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY,
+    accessKeyId: config.APP_ACCESS_KEY_ID,
+    secretAccessKey: config.APP_SECRET_ACCESS_KEY,
   },
 });
 
@@ -173,3 +173,27 @@ export const filterMoviesByQuery = (filter) => {
 
   return filterByType;
 };
+
+export const timeAgo = (date) => {
+  const now = Date.now();
+  const past = new Date(date).getTime();
+  const seconds = Math.floor((now - past) / 1000);
+
+  const intervals = [
+    { label: "year", seconds: 31536000 },
+    { label: "month", seconds: 2592000 },
+    { label: "day", seconds: 86400 },
+    { label: "hour", seconds: 3600 },
+    { label: "minute", seconds: 60 },
+    { label: "second", seconds: 1 },
+  ];
+
+  for (const interval of intervals) {
+    const count = Math.floor(seconds / interval.seconds);
+    if (count >= 1) {
+      return `${count} ${interval.label}${count > 1 ? "s" : ""} ago`;
+    }
+  }
+
+  return "just now";
+}
