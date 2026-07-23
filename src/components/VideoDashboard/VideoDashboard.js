@@ -35,7 +35,12 @@ export default function VideoDashboard() {
         {filterByTab.map((tab, idx) => {
           return (
             <Tab
-              className={style.customTab}
+              sx={{
+                color: "white",
+                "&.Mui-selected": {
+                  color: "white",
+                },
+              }}
               key={idx}
               value={tab}
               label={tab}
