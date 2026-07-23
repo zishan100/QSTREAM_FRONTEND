@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root{
+  --black-color:#111111;
+  --background-color:#1D1D1D;
+  --white-color:#FFFFFF;
+  --btn-color:#ef4444;
+  --select-color:#57534e;
+}
