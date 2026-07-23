@@ -5,8 +5,7 @@ name: Deploy React App
 
 on:
   push:
-    branches:
-      -main
+    branches: [ "main" ]
 
 jobs:
   deploy:
@@ -14,26 +13,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
 
-      - run: npm install
-      
-      - run: |
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Create .env.production
+        run: |
           echo "${{ secrets.ENV_PRODUCTION }}" > .env.production
 
-      - run: npm run build
-      
-      - uses: aws-actions/configure-aws-credentials@v4
+      - name: Build React Application
+        run: npm run build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
-      
-      - run: |
+
+      - name: Upload Build Folder to S3
+        run: |
           aws s3 sync build/ s3://${{ secrets.S3_BUCKET }} --delete
     
     
